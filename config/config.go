@@ -11,15 +11,26 @@ import (
 var Config AppConfig
 
 type AppConfig struct {
-	Port                   int      `json:"port"`
-	AppName                string   `json:"appName"`
-	AppEnv                 string   `json:"appEnv"`
-	SignatureKey           string   `json:"signatureKey"`
-	Database               Database `json:"database"`
-	RateLimiterMaxRequests float64  `json:"rateLimiterMaxRequests"`
-	RateLimiterTimeSeconds int      `json:"rateLimiterTimeSeconds"`
-	JwtSecretKey           string   `json:"jwtSecretKey"`
-	JwtExpirationTime      int      `json:"jwtExpirationTime"`
+	Port                   int             `json:"port"`
+	AppName                string          `json:"appName"`
+	AppEnv                 string          `json:"appEnv"`
+	SignatureKey           string          `json:"signatureKey"`
+	Database               Database        `json:"database"`
+	RateLimiterMaxRequests float64         `json:"rateLimiterMaxRequests"`
+	RateLimiterTimeSeconds int             `json:"rateLimiterTimeSeconds"`
+	InternalService        InternalService `json:"internalService"`
+	GCSType                string          `json:"gcsType"`
+	GCSProjectID           string          `json:"gcsProjectID"`
+	GCSPrivateKeyID        string          `json:"gcsPrivateKeyID"`
+	GCSPrivateKey          string          `json:"gcsPrivateKey"`
+	GCSClientKey           string          `json:"gcsClientKey"`
+	GCSClientEmail         string          `json:"gcsClientEmail"`
+	GCSClientID            string          `json:"gcsClientID"`
+	GCSAuthURI             string          `json:"gcsAuthURI"`
+	GCSAuthProviderX509URL string          `json:"gcsAuthProviderX509URI"`
+	GCSClientX509CertURL   string          `json:"gcsClientX509CertURI"`
+	GCSUniverseDomain      string          `json:"gcsUniverseDomain"`
+	GCSBucketName          string          `json:"gcsBucketName"`
 }
 
 type Database struct {
@@ -32,6 +43,15 @@ type Database struct {
 	MaxLifeTimeConnection int    `json:"maxLifeTimeConnection"`
 	MaxIdleConnections    int    `json:"maxIdleConnections"`
 	MaxIdleTime           int    `json:"maxIdleTime"`
+}
+
+type InternalService struct {
+	User User `json:"user"`
+}
+
+type User struct {
+	Host         string `json:"host"`
+	SignatureKey string `json:"signatureKey"`
 }
 
 func Init() {

@@ -1,8 +1,13 @@
 package error
 
+import (
+	errField "field-service/constants/error/field"
+	errFieldSchedule "field-service/constants/error/fieldSchedule"
+)
+
 func ErrMapping(err error) bool {
 	allErrors := make([]error, 0)
-	allErrors = append(append(GeneralErrrors[:], UserErrors[:]...))
+	allErrors = append(append(GeneralErrrors[:], errField.FieldErrors[:]...), errFieldSchedule.FieldScheduleErrors[:]...)
 
 	for _, item := range allErrors {
 		if err.Error() == item.Error() {
