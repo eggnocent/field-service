@@ -40,8 +40,9 @@ type FieldDetailResponse struct {
 }
 
 type FieldRequestParam struct {
-	Page       int     `form:"page" validate:"required"`
-	Limit      int     `form:"limit" validate:"required"`
-	SortColumn *string `form:"sortColumn" validate:"required"`
-	SortOrder  *string `form:"sortOrder" validate:"required"`
+	Page          int     `form:"page" validate:"required"`
+	Limit         int     `form:"limit" validate:"required"`
+	SortColumn    *string `form:"sortColumn" validate:"required"`
+	SortDirection *string `form:"sortDirection" validate:"required"`
+	SortOrder     *string `form:"sortOrder" validate:"required"`
 }
