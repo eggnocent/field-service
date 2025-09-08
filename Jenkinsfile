@@ -53,7 +53,7 @@ pipeline {
     stage('Checkout Code') {
       steps {
         script {
-          def repoUrl = 'https://github.com/Mini-Soccer-Project/field-service.git'
+          def repoUrl = 'https://github.com/eggnocent/field-service.git'
 
           checkout([$class: 'GitSCM',
             branches: [
@@ -106,7 +106,7 @@ pipeline {
           sh """
           git config --global user.name 'Jenkins CI'
           git config --global user.email 'jenkins@company.com'
-          git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/Mini-Soccer-Project/field-service.git
+          git remote set-url origin https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@github.com/eggnocent/field-service.git
           git add docker-compose.yaml
           git commit -m 'Update image version to ${TARGET_BRANCH}-${currentBuild.number} [skip ci]' || echo 'No changes to commit'
           git pull origin ${TARGET_BRANCH} --rebase
