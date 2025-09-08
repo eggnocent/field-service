@@ -9,7 +9,9 @@ import (
 	"field-service/domain/dto"
 	"field-service/domain/models"
 	"fmt"
+
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -115,6 +117,9 @@ func (f *FieldRepository) Create(ctx context.Context, req *models.Field) (*model
 }
 
 func (f *FieldRepository) Update(ctx context.Context, uuid string, req *models.Field) (*models.Field, error) {
+	logrus.Infof("[REPOSITORY] Update called for UUID: %s", uuid)
+	logrus.Infof("[REPOSITORY] Incoming model update data: %+v", req)
+
 	field := models.Field{
 		Code:         req.Code,
 		Name:         req.Name,
@@ -122,10 +127,15 @@ func (f *FieldRepository) Update(ctx context.Context, uuid string, req *models.F
 		PricePerHour: req.PricePerHour,
 	}
 
+	logrus.Infof("[REPOSITORY] Executing DB update for UUID: %s with values: %+v", uuid, field)
+
 	err := f.db.WithContext(ctx).Where("uuid = ?", uuid).Updates(&field).Error
 	if err != nil {
+		logrus.Errorf("[REPOSITORY] Failed to update field UUID %s: %v", uuid, err)
 		return nil, errWrap.WrapError(errConstant.ErrSQLError)
 	}
+
+	logrus.Infof("[REPOSITORY] Update successful for UUID: %s", uuid)
 	return &field, nil
 }
 

@@ -2,18 +2,19 @@ package dto
 
 import (
 	"field-service/constants"
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type FieldScheduleRequest struct {
 	FieldID string   `json:"field_id" validate:"required"`
 	Date    string   `json:"date" validate:"required"`
-	TimeIDs []string `json:"time_ids" validate:"required"`
+	TimeIDs []string `json:"time_id" validate:"required"`
 }
 
 type GenerateFieldScheduleForOneMonthRequest struct {
-	FieldID string `json:"field_id" validate:"required"`
+	FieldID string `json:"fieldID" validate:"required"`
 }
 
 type UpdateFieldScheduleRequest struct {
@@ -22,7 +23,7 @@ type UpdateFieldScheduleRequest struct {
 }
 
 type UpdateStatusFieldScheduleRequest struct {
-	FieldScheduleIDs []string `json:"field_schedule_ids" validate:"required"`
+	FieldScheduleIDs []string `json:"fieldScheduleIDs" validate:"required"`
 }
 
 type FieldScheduleResponse struct {

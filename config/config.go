@@ -1,8 +1,8 @@
 package config
 
 import (
-	"os"
 	"field-service/common/util"
+	"os"
 
 	"github.com/sirupsen/logrus"
 	_ "github.com/spf13/viper/remote"
@@ -11,26 +11,18 @@ import (
 var Config AppConfig
 
 type AppConfig struct {
-	Port                   int             `json:"port"`
-	AppName                string          `json:"appName"`
-	AppEnv                 string          `json:"appEnv"`
-	SignatureKey           string          `json:"signatureKey"`
-	Database               Database        `json:"database"`
-	RateLimiterMaxRequests float64         `json:"rateLimiterMaxRequests"`
-	RateLimiterTimeSeconds int             `json:"rateLimiterTimeSeconds"`
-	InternalService        InternalService `json:"internalService"`
-	GCSType                string          `json:"gcsType"`
-	GCSProjectID           string          `json:"gcsProjectID"`
-	GCSPrivateKeyID        string          `json:"gcsPrivateKeyID"`
-	GCSPrivateKey          string          `json:"gcsPrivateKey"`
-	GCSClientKey           string          `json:"gcsClientKey"`
-	GCSClientEmail         string          `json:"gcsClientEmail"`
-	GCSClientID            string          `json:"gcsClientID"`
-	GCSAuthURI             string          `json:"gcsAuthURI"`
-	GCSAuthProviderX509URL string          `json:"gcsAuthProviderX509URI"`
-	GCSClientX509CertURL   string          `json:"gcsClientX509CertURI"`
-	GCSUniverseDomain      string          `json:"gcsUniverseDomain"`
-	GCSBucketName          string          `json:"gcsBucketName"`
+	Port                  int             `json:"port"`
+	AppName               string          `json:"appName"`
+	AppEnv                string          `json:"appEnv"`
+	SignatureKey          string          `json:"signatureKey"`
+	Database              Database        `json:"database"`
+	RateLimiterMaxRequest float64         `json:"rateLimiterMaxRequest"`
+	RateLimiterTimeSecond int             `json:"rateLimiterTimeSecond"`
+	InternalService       InternalService `json:"internalService"`
+	GCSType               string          `json:"gcsType"`
+	GCSProjectID          string          `json:"gcsProjectID"`
+	GCSCredentialsEncoded string          `json:"gcsCredentialsEncoded"` // ✅ Ganti dari GCSPrivateKey
+	GCSBucketName         string          `json:"gcsBucketName"`
 }
 
 type Database struct {

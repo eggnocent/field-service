@@ -1,33 +1,34 @@
 package dto
 
 import (
-	"github.com/google/uuid"
 	"mime/multipart"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type FieldRequest struct {
-	Name         string                 `json:"name" validate:"required"`
-	Code         string                 `json:"code" validate:"required"`
-	PricePerHour int                    `json:"pricePerHour" validate:"required"`
-	Images       []multipart.FileHeader `json:"images" validate:"required"`
+	Name         string                 `form:"name" validate:"required"`
+	Code         string                 `form:"code" validate:"required"`
+	PricePerHour int                    `form:"pricePerHour" validate:"required"`
+	Images       []multipart.FileHeader `form:"images"`
 }
 
 type UpdateFieldRequest struct {
-	Name         string                 `json:"name" validate:"required"`
-	Code         string                 `json:"code" validate:"required"`
-	PricePerHour int                    `json:"pricePerHour" validate:"required"`
-	Images       []multipart.FileHeader `json:"images"`
+	Name         string                 `form:"name"`
+	Code         string                 `form:"code"`
+	PricePerHour int                    `form:"pricePerHour"`
+	Images       []multipart.FileHeader `form:"images"`
 }
 
 type FieldResponse struct {
-	UUID         uuid.UUID `json:"uuid"`
-	Code         string    `json:"code"`
-	Name         string    `json:"name"`
-	PricePerHour int       `json:"pricePerHour"`
-	Images       []string  `json:"images"`
-	CreatedAt    time.Time `json:"createdAt"`
-	UpdatedAt    time.Time `json:"updatedAt"`
+	UUID         uuid.UUID  `json:"uuid"`
+	Code         string     `json:"code"`
+	Name         string     `json:"name"`
+	PricePerHour int        `json:"pricePerHour"`
+	Images       []string   `json:"images"`
+	CreatedAt    *time.Time `json:"createdAt"`
+	UpdatedAt    *time.Time `json:"updatedAt"`
 }
 
 type FieldDetailResponse struct {
@@ -40,9 +41,9 @@ type FieldDetailResponse struct {
 }
 
 type FieldRequestParam struct {
-	Page          int     `form:"page" validate:"required"`
-	Limit         int     `form:"limit" validate:"required"`
-	SortColumn    *string `form:"sortColumn" validate:"required"`
-	SortDirection *string `form:"sortDirection" validate:"required"`
-	SortOrder     *string `form:"sortOrder" validate:"required"`
+	Page          int     `form:"page"`
+	Limit         int     `form:"limit"`
+	SortColumn    *string `form:"sortColumn"`
+	SortDirection *string `form:"sortDirection"`
+	SortOrder     *string `form:"sortOrder"`
 }

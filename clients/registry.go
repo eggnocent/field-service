@@ -21,6 +21,6 @@ func (c *ClientRegistry) GetUser() clients.IUserClient {
 	return clients.NewUserClient(
 		config.NewClientConfig(
 			config.WithBaseURL(config2.Config.InternalService.User.Host),
-			config.WithSignatureKey(config2.Config.SignatureKey),
+			config.WithSignatureKey(config2.Config.InternalService.User.SignatureKey),
 		))
 }

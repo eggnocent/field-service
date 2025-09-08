@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"field-service/clients"
+	"field-service/common/gcs"
 	"field-service/common/response"
 	"field-service/config"
 	"field-service/constants"
@@ -16,6 +20,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -25,6 +30,13 @@ var command = &cobra.Command{
 	Run: func(c *cobra.Command, args []string) {
 		_ = godotenv.Load()
 		config.Init()
+
+		// Setup log
+		logrus.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp: true,
+		})
+		logrus.SetLevel(logrus.DebugLevel)
+
 		db, err := config.InitDatabase()
 		if err != nil {
 			panic(err)
@@ -34,23 +46,28 @@ var command = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
-
 		time.Local = loc
 
 		err = db.AutoMigrate(
-			&models.Role{},
-			&models.User{},
+			&models.Field{},
+			&models.FieldSchedule{},
+			&models.Time{},
 		)
 		if err != nil {
 			panic(err)
 		}
 
+		gcs := InitGCS()
+		client := clients.NewClientRegistry()
 		repository := repositories.NewRepositoryRegistry(db)
-		service := services.NewServiceRegistry(repository)
+		service := services.NewServiceRegistry(repository, gcs)
 		controller := controllers.NewControllerRegistry(service)
 
-		router := gin.Default()
+		// ✅ Ganti gin.Default() → gin.New() agar HandlePanic() aktif
+		router := gin.New()
 		router.Use(middlewares.HandlePanic())
+		router.Use(gin.Logger())
+
 		router.NoRoute(func(c *gin.Context) {
 			c.JSON(http.StatusNotFound, response.Response{
 				Status:  constants.Error,
@@ -61,10 +78,11 @@ var command = &cobra.Command{
 		router.GET("/", func(c *gin.Context) {
 			c.JSON(http.StatusOK, response.Response{
 				Status:  constants.Success,
-				Message: "Welcome to User Service",
+				Message: "Welcome to Field Service",
 			})
 		})
 
+		// CORS
 		router.Use(func(c *gin.Context) {
 			c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 			c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, PUT")
@@ -72,16 +90,16 @@ var command = &cobra.Command{
 			c.Next()
 		})
 
+		// Optional rate limiter (komentar masih kamu simpan)
 		// lmt := tollbooth.NewLimiter(
 		// 	config.Config.RateLimiterMaxRequests,
 		// 	&limiter.ExpirableOptions{
 		// 		DefaultExpirationTTL: time.Duration(config.Config.RateLimiterTimeSeconds) * time.Second,
 		// 	})
-
 		// router.Use(middlewares.RateLimiter(lmt))
 
 		group := router.Group("/api/v1")
-		route := routes.NewRouteRegistry(controller, group)
+		route := routes.NewRouteRegistry(controller, group, client)
 		route.Serve()
 
 		port := fmt.Sprintf(":%d", config.Config.Port)
@@ -94,4 +112,18 @@ func Run() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func InitGCS() gcs.IGCSlient {
+	decoded, err := base64.StdEncoding.DecodeString(config.Config.GCSCredentialsEncoded)
+	if err != nil {
+		panic(err)
+	}
+
+	var sa gcs.ServiceAccountKeyJSON
+	if err := json.Unmarshal(decoded, &sa); err != nil {
+		panic(fmt.Errorf("failed to parse service account JSON: %w", err))
+	}
+
+	return gcs.NewGCSClient(sa, config.Config.GCSBucketName)
 }
